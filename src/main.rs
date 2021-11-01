@@ -38,7 +38,6 @@ fn main(req: Request) -> Result<Response, Error> {
             location_value.push_str(url.query().expect("Query string is present"));
         }
 
-        // Build a redirect response.
         return Ok(
             Response::from_status(params.status).with_header(header::LOCATION, location_value)
         );
