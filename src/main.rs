@@ -5,7 +5,7 @@ use serde::Deserialize;
 
 // section visible
 // Deserialize a set of dictionary values into a struct.
-// Exmple key-value pairs in the dictionary:
+// Example key-value pairs in the dictionary:
 //   "/test-page-1/": { "status": 301, "keep_query": true, "path": "/destination1" }
 //   "www.example.com/foo/*": { "status": 307, "keep_query": false, "path": "/dst1" }
 #[derive(Debug, Deserialize)]
