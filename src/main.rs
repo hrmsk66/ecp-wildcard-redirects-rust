@@ -1,26 +1,12 @@
-// This example assumes that redirection parameters are defined in the dictionary in the format like
-// below.
+// If the requested path is a complete or partial match, the app will return
+// a synthetic redirect response according to some parameters defined in the dictionary.
 //   - Keys can have a hostname prefix or * suffix (* must be after /).
-//   - "keep_query" field in values indicate whether the query string should be preserved in
-//   redirect responses or not. 
+//   - "keep_query" field in values indicate whether the query string should be preserved in the responses or not. 
 //
-// {
-//   "/test-page-1/": {
-//     "status": 301,
-//     "keep_query": true,
-//     "path": "/destination1"
-//   },
-//   "/city/boston/*": {
-//     "status": 302,
-//     "keep_query": false,
-//     "path": "/boston-massachusetts"
-//   },
-//   "www.example.com/foo/*": {
-//     "status": 307,
-//     "keep_query": true,
-//     "path": "/dst1"
-//   }
-// }
+// Exmple redirect param definitions:
+//   "/test-page-1/": { "status": 301, "keep_query": true, "path": "/destination1" }
+//   "www.example.com/foo/*": { "status": 307, "keep_query": true, "path": "/dst1" }
+//
 use fastly::http::header;
 use fastly::http::Url;
 use fastly::{Dictionary, Error, Request, Response};
