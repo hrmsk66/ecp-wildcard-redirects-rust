@@ -1,0 +1,14 @@
+{
+    "/test-page-1/": "{\"status\": 301, \"keep_query\": true, \"path\": \"/destination1\"}",
+    "/test-page-2/": "{\"status\": 302, \"keep_query\": false, \"path\": \"/destination2\"}",
+    "/city/boston/*": "{\"status\": 301, \"keep_query\": true, \"path\": \"/boston-massachusetts\"}",
+    "/city/san-francisco/*": "{\"status\": 302, \"keep_query\": true, \"path\": \"/destinations/san-francisco-california\"}",
+    "www.example.com/foo/*": "{\"status\": 301, \"keep_query\": true, \"path\": \"/dst1\"}",
+    "www.example.com/foo/bar/*": "{\"status\": 301, \"keep_query\": true, \"path\": \"/dst2\"}",
+    "www.example.com/foo/bar/baz": "{\"status\": 301, \"keep_query\": true, \"path\": \"/dst3\"}",
+    "/foo/*": "{\"status\": 307, \"keep_query\": true, \"path\": \"/dst1\"}",
+    "/foo/bar/*": "{\"status\": 307, \"keep_query\": true, \"path\": \"/dst2\"}",
+    "/foo/bar/baz": "{\"status\": 307, \"keep_query\": true, \"path\": \"/dst3\"}",
+    "/invalid-status": "{\"status\": \"foo\", \"keep_query\": true, \"path\": \"/dst3\"}",
+    "/missing-param": "{\"status\": 307, \"keep_query\": false }"
+}
