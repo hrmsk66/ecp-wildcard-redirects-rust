@@ -51,7 +51,7 @@ fn main(req: Request) -> Result<Response, Error> {
 fn lookup_redirects(url: &Url) -> Option<String> {
     let redirects = Dictionary::open("redirects");
 
-    // 1. Look up with host + path
+    // (1) Look up with host + path
     let mut key = String::new();
     key.push_str(url.host_str()?);
     key.push_str(url.path());
@@ -59,21 +59,21 @@ fn lookup_redirects(url: &Url) -> Option<String> {
         return Some(params);
     }
 
-    // 2. Look up with path.
+    // (2) Look up with path.
     key.clear();
     key.push_str(url.path());
     if let Some(params) = redirects.get(key.as_str()) {
         return Some(params);
     }
 
-    // 3. Look up with host + path + wildcard.
+    // (3) Look up with host + path + wildcard.
     key.clear();
     key.push_str(url.host_str()?);
     // Add requested path, remove trailing slash if present.
     key.push_str(url.path().trim_end_matches("/"));
 
     // Perform two rounds of wildcard lookups.
-    // One for "host + path + wildcard", another for "path + wildcard".
+    // One for "(3) host + path + wildcard", another for "(4) path + wildcard".
     for _ in 0..2 {
         // Wildcard lookup is done recursively until all directories have had a chance to match on a wildcard.
         while key.contains('/') {
@@ -88,7 +88,7 @@ fn lookup_redirects(url: &Url) -> Option<String> {
                 key.truncate(n);
             }
         }
-        // 4. Look up with path + wildcard.
+        // (4) Look up with path + wildcard.
         key.clear();
         key.push_str(url.path().trim_end_matches("/"));
     }
