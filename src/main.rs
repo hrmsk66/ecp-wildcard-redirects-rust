@@ -1,17 +1,13 @@
-// If the requested path is a complete or partial match, the app will return
-// a synthetic redirect response according to some parameters defined in the dictionary.
-//   - Keys can have a hostname prefix or * suffix (* must be after /).
-//   - "keep_query" field in values indicate whether the query string should be preserved in the responses or not. 
-//
-// Exmple redirect param definitions:
-//   "/test-page-1/": { "status": 301, "keep_query": true, "path": "/destination1" }
-//   "www.example.com/foo/*": { "status": 307, "keep_query": true, "path": "/dst1" }
-//
 use fastly::http::header;
 use fastly::http::Url;
 use fastly::{Dictionary, Error, Request, Response};
 use serde::Deserialize;
 
+// section visible
+// Deserialize a set of dictionary values into a struct.
+// Exmple key-value pairs in the dictionary:
+//   "/test-page-1/": { "status": 301, "keep_query": true, "path": "/destination1" }
+//   "www.example.com/foo/*": { "status": 307, "keep_query": false, "path": "/dst1" }
 #[derive(Debug, Deserialize)]
 struct RedirectParams {
     status: u16,
@@ -34,7 +30,7 @@ fn main(req: Request) -> Result<Response, Error> {
             params.path,
         );
         if params.keep_query && url.query().is_some() {
-            location_value.push_str("?");
+            location_value.push('?');
             location_value.push_str(url.query().expect("Query string is present"));
         }
 
@@ -69,7 +65,7 @@ fn lookup_redirects(url: &Url) -> Option<String> {
     key.clear();
     key.push_str(url.host_str()?);
     // Add requested path, remove trailing slash if present.
-    key.push_str(url.path().trim_end_matches("/"));
+    key.push_str(url.path().trim_end_matches('/'));
 
     // Perform two rounds of wildcard lookups.
     // One for "(3) host + path + wildcard", another for "(4) path + wildcard".
@@ -89,8 +85,9 @@ fn lookup_redirects(url: &Url) -> Option<String> {
         }
         // (4) Look up with path + wildcard.
         key.clear();
-        key.push_str(url.path().trim_end_matches("/"));
+        key.push_str(url.path().trim_end_matches('/'));
     }
     // Redirect not found.
     None
 }
+// section-end visible
