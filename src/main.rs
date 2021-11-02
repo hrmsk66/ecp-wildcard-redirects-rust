@@ -1,9 +1,10 @@
-use fastly::http::header;
-use fastly::http::Url;
+use fastly::http::{header, Url};
 use fastly::{Dictionary, Error, Request, Response};
 use serde::Deserialize;
 
 // section visible
+const LOOKUP_LOOP_LIMIT: u8 = 6;
+
 // Deserialize a set of dictionary values into a struct.
 // Example key-value pairs in the dictionary:
 //   "/test-page-1/": { "status": 301, "keep_query": true, "path": "/destination1" }
@@ -70,8 +71,10 @@ fn lookup_redirects(url: &Url) -> Option<String> {
     // Perform two rounds of wildcard lookups.
     // One for "(3) host + path + wildcard", another for "(4) path + wildcard".
     for _ in 0..2 {
-        // Wildcard lookup is done recursively until all directories have had a chance to match on a wildcard.
-        while key.contains('/') {
+        // Wildcard lookup is done recursively until the lookup count limit is reached
+        // or all directories have had a chance to match on a wildcard.
+        let mut n = 0;
+        while key.contains('/') && n < LOOKUP_LOOP_LIMIT {
             key.push_str("/*");
             if let Some(params) = redirects.get(&key) {
                 return Some(params);
@@ -82,12 +85,14 @@ fn lookup_redirects(url: &Url) -> Option<String> {
             if let Some(n) = key.rfind('/') {
                 key.truncate(n);
             }
+            n += 1;
         }
         // (4) Look up with path + wildcard.
         key.clear();
         key.push_str(url.path().trim_end_matches('/'));
     }
     // Redirect not found.
+    println!("No redirection entry found");
     None
 }
 // section-end visible
