@@ -6,7 +6,7 @@ description = "A basic starter kit that demonstrates routing, simple synthetic r
 language = "rust"
 manifest_version = 2
 name = "ecp-wildcard-redirects-rust"
-service_id = ""
+service_id = "3EuSqKQXlbpjrkyTKpWQg9"
 
 [local_server]
   [local_server.backends]
